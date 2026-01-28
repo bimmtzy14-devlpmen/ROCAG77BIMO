@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard User (Demo)</title>
+
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#f2f2f2;color:#111}
+
+/* HEADER */
+.header{
+  position:fixed;top:0;left:0;width:100%;height:60px;
+  background:#fff;border-bottom:2px solid #000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;z-index:2000
+}
+.header-left{display:flex;gap:15px;align-items:center}
+.hamburger{font-size:24px;cursor:pointer}
+.clock{font-size:14px}
+
+/* SIDEBAR */
+.sidebar{
+  position:fixed;top:60px;left:-260px;width:250px;
+  height:calc(100% - 60px);
+  background:#000;transition:.3s
+}
+.sidebar.active{left:0}
+.sidebar a{
+  display:block;padding:15px 20px;
+  color:#fff;text-decoration:none;
+  border-bottom:1px solid #222
+}
+.sidebar a.active{background:#111}
+.sidebar a.logout{background:#fff;color:#000;font-weight:bold}
+
+/* MAIN */
+.main{padding:90px 20px}
+
+/* CARDS */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:15px;margin-bottom:20px
+}
+.card{
+  background:#fff;border:2px solid #000;
+  padding:15px;border-radius:8px
+}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;background:#fff}
+thead{background:#000;color:#fff}
+th,td{border:1px solid #000;padding:8px;font-size:13px;text-align:center}
+tbody tr:hover{background:#eee}
+
+.online{color:#2ecc71;font-weight:bold}
+.offline{color:#e74c3c;font-weight:bold}
+
+/* RESPONSIVE */
+@media(min-width:768px){
+  .sidebar{left:0}
+  .main{margin-left:250px}
+  .hamburger{display:none}
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+    <b>Dashboard User</b>
+  </div>
+  <div class="clock" id="clock"></div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <a href="#" class="active">🏠 Home / User</a>
+  <a href="#">💰 Deposit</a>
+  <a href="#">💸 Withdraw</a>
+  <a href="#">⚙ Player Setting</a>
+  <a href="#" class="logout">🚪 Log Out</a>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<div class="cards">
+  <div class="card">Total User<br><b id="totalUser">0</b></div>
+  <div class="card">Online<br><b id="onlineUser">0</b></div>
+  <div class="card">Offline<br><b id="offlineUser">0</b></div>
+</div>
+
+<table>
+<thead>
+<tr>
+  <th>USERNAME</th>
+  <th>STATUS</th>
+  <th>TERAKHIR ONLINE</th>
+</tr>
+</thead>
+<tbody id="userTable"></tbody>
+</table>
+
+</div>
+
+<script>
+/* CLOCK */
+setInterval(()=>{
+  clock.innerText=new Date().toLocaleTimeString("id-ID");
+},1000);
+
+/* MENU */
+function toggleMenu(){
+  sidebar.classList.toggle("active");
+}
+
+/* USERNAME GENERATOR */
+const humans=["andi","budi","rizal","dafa","rafi","iqbal","fajar"];
+const animals=["kucing","harimau","ayam","kuda","ular","kerbau"];
+const words=["win","jepe","mantap","keren","warkop"];
+const nums=[1,12,76,88,188,90,0,5,7];
+
+function r(a){return a[Math.floor(Math.random()*a.length)]}
+function username(){
+  return (Math.random()<0.5?r(humans):r(animals))+r(words)+r(nums);
+}
+
+/* INIT USER */
+const TOTAL=327;
+const users=[];
+
+for(let i=0;i<TOTAL;i++){
+  const online=Math.random()<0.4;
+  const lastOnline = online
+    ? null
+    : new Date(Date.now() - (Math.random()*5+5)*60*1000); // 5–10 menit lalu
+
+  users.push({
+    user:username(),
+    online:online,
+    lastOnline:lastOnline
+  });
+}
+
+/* RENDER */
+function render(){
+  let on=0,off=0;
+  userTable.innerHTML="";
+
+  users.forEach(u=>{
+    if(u.online) on++;
+    else off++;
+
+    userTable.innerHTML+=`
+      <tr>
+        <td>${u.user}</td>
+        <td class="${u.online?'online':'offline'}">
+          ${u.online?'ONLINE':'OFFLINE'}
+        </td>
+        <td>
+          ${u.online ? '-' : u.lastOnline.toLocaleString("id-ID")}
+        </td>
+      </tr>
+    `;
+  });
+
+  totalUser.innerText=users.length;
+  onlineUser.innerText=on;
+  offlineUser.innerText=off;
+}
+
+render();
+</script>
+
+</body>
+</html>tus==="online"?"-":u.lastOnline.toLocaleString("id-ID")}</td>
+      </tr>
+    `;
+  });
+}
+
+setInterval(()=>{
+  updateUsers();
+  render();
+},1000);
+
+render();
+</script>
+
+</body>
+</html>90","gofood18","driversurga6","kingjepe188","kuntul77","empedusapi12","ahmadsalim77","badak77","dewicantik90","mamanggarox5","gopay78","saldo500k","kitamain77","betgede12","moncong18","abing90","abongjamal","tantesemok77","menang600k","afdalxyz","aisyah67","ishowspeed5","abdulbradpit","nicegang78","solidaritas7","engkolgas8","sobaabu77","nicewin77","azharhitam8","cintadower12","bilqistok77","bibirlenjeh77","rokoksurya5","bandara55","monika80","adekmanis12","kelaz3sd","mengkudu80","pantatjanda80","kohdelwin60","epicjepe77","refandika80","yadika12","mambabunny77","highflyer6","spacemanx500","azkisipit66","sepongin78","julebangsat77"
+];
+
+const TOTAL=347,CYCLE=70;
+const players=[];
+const table=document.getElementById("table");
+const search=document.getElementById("search");
+
+for(let i=0;i<TOTAL;i++){
+  players.push({
+    name:names[i%names.length]+"_"+(100+i),
+    saldo:Math.floor(Math.random()*3000000)+500000,
+    online:false,
+    last:new Date(),
+    hist:"-",
+    anim:"",
+    offset:Math.floor(Math.random()*CYCLE)
+  });
+}
+
+function rupiah(n){return "Rp "+n.toLocaleString("id-ID")}
+function format(d){return d.toLocaleString("id-ID")}
+
+/* ===== ENGINE ===== */
+function update(){
+  let on=0,off=0;
+  const m=new Date().getMinutes();
+
+  players.forEach(p=>{
+    const c=(m+p.offset)%CYCLE;
+    const isOn=c>=30&&c<40;
+
+    if(p.online&&!isOn)p.last=new Date();
+
+    if(isOn){
+      if(Math.random()<0.02){
+        const gain=[50000,80000,150000][Math.floor(Math.random()*3)];
+        p.saldo+=gain;
+        p.hist="Deposit +"+rupiah(gain);
+        p.anim="up";
+      }
+      on++;
+    }else{
+      const loss=Math.floor(Math.random()*7000)+3000;
+      p.saldo=Math.max(0,p.saldo-loss);
+      p.hist="Lose -"+rupiah(loss);
+      p.anim="down";
+      off++;
+    }
+    p.online=isOn;
+  });
+
+  total.innerText=players.length;
+  online.innerText=on;
+  offline.innerText=off;
+}
+
+function render(){
+  table.innerHTML="";
+  const k=search.value.toLowerCase();
+
+  players.forEach(p=>{
+    if(!p.name.toLowerCase().includes(k))return;
+    table.innerHTML+=`
+    <tr>
+      <td>${p.name}</td>
+      <td class="${p.anim}">${rupiah(p.saldo)}</td>
+      <td>${p.online?"🟢 Online":"🔴 Offline"}</td>
+      <td>${p.online?"-":format(p.last)}</td>
+      <td>${p.hist}</td>
+    </tr>`;
+    p.anim="";
+  });
+}
+
+search.oninput=render;
+setInterval(()=>{update();render()},1000);
+
+/* UI */
+function toggleMenu(){
+  sidebar.classList.toggle("active");
+  hamburger.innerHTML=sidebar.classList.contains("active")?"✖":"☰";
+}
+function closeMenu(){
+  sidebar.classList.remove("active");
+  hamburger.innerHTML="☰";
+}
+setInterval(()=>clock.innerText=new Date().toLocaleTimeString("id-ID"),1000);
+</script>
+
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard User (Demo)</title>
+<title>Dashboard Deposit</title>
 
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
@@ -16,47 +16,40 @@ body{margin:0;background:#f2f2f2;color:#111}
   display:flex;align-items:center;justify-content:space-between;
   padding:0 20px;z-index:2000
 }
-.header-left{display:flex;gap:15px;align-items:center}
+.header-left{display:flex;align-items:center;gap:15px}
 .hamburger{font-size:24px;cursor:pointer}
 .clock{font-size:14px}
 
 /* SIDEBAR */
 .sidebar{
   position:fixed;top:60px;left:-260px;width:250px;
-  height:calc(100% - 60px);
-  background:#000;transition:.3s
+  height:calc(100% - 60px);background:#000;
+  transition:.3s;z-index:1000
 }
 .sidebar.active{left:0}
 .sidebar a{
-  display:block;padding:15px 20px;
-  color:#fff;text-decoration:none;
-  border-bottom:1px solid #222
+  display:block;padding:15px 20px;color:#fff;
+  text-decoration:none;border-bottom:1px solid #222
 }
-.sidebar a.active{background:#111}
-.sidebar a.logout{background:#fff;color:#000;font-weight:bold}
+.sidebar a:hover{background:#111}
+.logout{
+  position:absolute;bottom:0;width:100%;
+  background:#fff;color:#000 !important;font-weight:bold
+}
 
 /* MAIN */
 .main{padding:90px 20px}
 
-/* CARDS */
-.cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:15px;margin-bottom:20px
-}
+/* CARD */
 .card{
-  background:#fff;border:2px solid #000;
-  padding:15px;border-radius:8px
+  background:#fff;border:2px solid #000;border-radius:8px;
+  padding:20px;margin-bottom:25px
 }
 
-/* TABLE */
-table{width:100%;border-collapse:collapse;background:#fff}
-thead{background:#000;color:#fff}
-th,td{border:1px solid #000;padding:8px;font-size:13px;text-align:center}
-tbody tr:hover{background:#eee}
-
-.online{color:#2ecc71;font-weight:bold}
-.offline{color:#e74c3c;font-weight:bold}
+/* CANVAS */
+canvas{
+  width:100%;height:300px;
+}
 
 /* RESPONSIVE */
 @media(min-width:768px){
@@ -72,216 +65,93 @@ tbody tr:hover{background:#eee}
 <!-- HEADER -->
 <div class="header">
   <div class="header-left">
-    <div class="hamburger" onclick="toggleMenu()">☰</div>
-    <b>Dashboard User</b>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">☰</div>
+    <strong>Hai, Celsiadmin01</strong>
   </div>
   <div class="clock" id="clock"></div>
 </div>
 
 <!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
-  <a href="https://bimmtzy14-devlpmen.github.io/ROCAG77BIMO/" class="active">🏠 Home / User</a>
-  <a href="https://bimmtzy14-devlpmen.github.io/ROCAG77BIMO/#">💰 Deposit</a>
+  <a href="#">🏠 Home</a>
+  <a href="#">👤 User</a>
+  <a href="#">💰 Deposit</a>
   <a href="#">💸 Withdraw</a>
-  <a href="#">⚙ Player Setting</a>
-  <a href="#" class="logout">🚪 Log Out</a>
+  <a href="#">⚙️ Setting Player</a>
+  <a href="login.html" class="logout">🚪 Logout</a>
 </div>
 
 <!-- MAIN -->
 <div class="main">
 
-<div class="cards">
-  <div class="card">Total User<br><b id="totalUser">0</b></div>
-  <div class="card">Online<br><b id="onlineUser">0</b></div>
-  <div class="card">Offline<br><b id="offlineUser">0</b></div>
-</div>
+<h2>Statistik Deposit</h2>
 
-<table>
-<thead>
-<tr>
-  <th>USERNAME</th>
-  <th>STATUS</th>
-  <th>TERAKHIR ONLINE</th>
-</tr>
-</thead>
-<tbody id="userTable"></tbody>
-</table>
+<div class="card">
+  <canvas id="depositChart"></canvas>
+</div>
 
 </div>
 
 <script>
-/* CLOCK */
-setInterval(()=>{
-  clock.innerText=new Date().toLocaleTimeString("id-ID");
-},1000);
+/* ===== MENU ===== */
+const sidebar=document.getElementById("sidebar");
+const hamburger=document.getElementById("hamburger");
 
-/* MENU */
-function toggleMenu(){
-  sidebar.classList.toggle("active");
-}
-
-/* USERNAME GENERATOR */
-const humans=["andi","budi","rizal","dafa","rafi","iqbal","fajar"];
-const animals=["kucing","harimau","ayam","kuda","ular","kerbau"];
-const words=["win","jepe","mantap","keren","warkop"];
-const nums=[1,12,76,88,188,90,0,5,7];
-
-function r(a){return a[Math.floor(Math.random()*a.length)]}
-function username(){
-  return (Math.random()<0.5?r(humans):r(animals))+r(words)+r(nums);
-}
-
-/* INIT USER */
-const TOTAL=327;
-const users=[];
-
-for(let i=0;i<TOTAL;i++){
-  const online=Math.random()<0.4;
-  const lastOnline = online
-    ? null
-    : new Date(Date.now() - (Math.random()*5+5)*60*1000); // 5–10 menit lalu
-
-  users.push({
-    user:username(),
-    online:online,
-    lastOnline:lastOnline
-  });
-}
-
-/* RENDER */
-function render(){
-  let on=0,off=0;
-  userTable.innerHTML="";
-
-  users.forEach(u=>{
-    if(u.online) on++;
-    else off++;
-
-    userTable.innerHTML+=`
-      <tr>
-        <td>${u.user}</td>
-        <td class="${u.online?'online':'offline'}">
-          ${u.online?'ONLINE':'OFFLINE'}
-        </td>
-        <td>
-          ${u.online ? '-' : u.lastOnline.toLocaleString("id-ID")}
-        </td>
-      </tr>
-    `;
-  });
-
-  totalUser.innerText=users.length;
-  onlineUser.innerText=on;
-  offlineUser.innerText=off;
-}
-
-render();
-</script>
-
-</body>
-</html>tus==="online"?"-":u.lastOnline.toLocaleString("id-ID")}</td>
-      </tr>
-    `;
-  });
-}
-
-setInterval(()=>{
-  updateUsers();
-  render();
-},1000);
-
-render();
-</script>
-
-</body>
-</html>90","gofood18","driversurga6","kingjepe188","kuntul77","empedusapi12","ahmadsalim77","badak77","dewicantik90","mamanggarox5","gopay78","saldo500k","kitamain77","betgede12","moncong18","abing90","abongjamal","tantesemok77","menang600k","afdalxyz","aisyah67","ishowspeed5","abdulbradpit","nicegang78","solidaritas7","engkolgas8","sobaabu77","nicewin77","azharhitam8","cintadower12","bilqistok77","bibirlenjeh77","rokoksurya5","bandara55","monika80","adekmanis12","kelaz3sd","mengkudu80","pantatjanda80","kohdelwin60","epicjepe77","refandika80","yadika12","mambabunny77","highflyer6","spacemanx500","azkisipit66","sepongin78","julebangsat77"
-];
-
-const TOTAL=347,CYCLE=70;
-const players=[];
-const table=document.getElementById("table");
-const search=document.getElementById("search");
-
-for(let i=0;i<TOTAL;i++){
-  players.push({
-    name:names[i%names.length]+"_"+(100+i),
-    saldo:Math.floor(Math.random()*3000000)+500000,
-    online:false,
-    last:new Date(),
-    hist:"-",
-    anim:"",
-    offset:Math.floor(Math.random()*CYCLE)
-  });
-}
-
-function rupiah(n){return "Rp "+n.toLocaleString("id-ID")}
-function format(d){return d.toLocaleString("id-ID")}
-
-/* ===== ENGINE ===== */
-function update(){
-  let on=0,off=0;
-  const m=new Date().getMinutes();
-
-  players.forEach(p=>{
-    const c=(m+p.offset)%CYCLE;
-    const isOn=c>=30&&c<40;
-
-    if(p.online&&!isOn)p.last=new Date();
-
-    if(isOn){
-      if(Math.random()<0.02){
-        const gain=[50000,80000,150000][Math.floor(Math.random()*3)];
-        p.saldo+=gain;
-        p.hist="Deposit +"+rupiah(gain);
-        p.anim="up";
-      }
-      on++;
-    }else{
-      const loss=Math.floor(Math.random()*7000)+3000;
-      p.saldo=Math.max(0,p.saldo-loss);
-      p.hist="Lose -"+rupiah(loss);
-      p.anim="down";
-      off++;
-    }
-    p.online=isOn;
-  });
-
-  total.innerText=players.length;
-  online.innerText=on;
-  offline.innerText=off;
-}
-
-function render(){
-  table.innerHTML="";
-  const k=search.value.toLowerCase();
-
-  players.forEach(p=>{
-    if(!p.name.toLowerCase().includes(k))return;
-    table.innerHTML+=`
-    <tr>
-      <td>${p.name}</td>
-      <td class="${p.anim}">${rupiah(p.saldo)}</td>
-      <td>${p.online?"🟢 Online":"🔴 Offline"}</td>
-      <td>${p.online?"-":format(p.last)}</td>
-      <td>${p.hist}</td>
-    </tr>`;
-    p.anim="";
-  });
-}
-
-search.oninput=render;
-setInterval(()=>{update();render()},1000);
-
-/* UI */
 function toggleMenu(){
   sidebar.classList.toggle("active");
   hamburger.innerHTML=sidebar.classList.contains("active")?"✖":"☰";
 }
-function closeMenu(){
-  sidebar.classList.remove("active");
-  hamburger.innerHTML="☰";
+
+/* ===== CLOCK ===== */
+setInterval(()=>{
+  document.getElementById("clock").innerText=
+    new Date().toLocaleTimeString("id-ID");
+},1000);
+
+/* ===== DEPOSIT CHART ===== */
+const canvas=document.getElementById("depositChart");
+const ctx=canvas.getContext("2d");
+
+/* DATA SESUAI REQUEST */
+const data=[
+  {label:"50K", value:50},
+  {label:"100K", value:21},
+  {label:"500K", value:18},
+  {label:"1 JT", value:5},
+  {label:"1.5 JT", value:6}
+];
+
+function drawChart(){
+  canvas.width=canvas.offsetWidth;
+  canvas.height=300;
+
+  const w=canvas.width;
+  const h=canvas.height;
+  const max=Math.max(...data.map(d=>d.value));
+  const barWidth=(w/data.length)-30;
+
+  ctx.clearRect(0,0,w,h);
+
+  data.forEach((d,i)=>{
+    const barHeight=(d.value/max)*(h-80);
+    const x=i*(barWidth+30)+30;
+    const y=h-barHeight-40;
+
+    /* BAR */
+    ctx.fillStyle="#000";
+    ctx.fillRect(x,y,barWidth,barHeight);
+
+    /* PERCENT */
+    ctx.fillStyle="#000";
+    ctx.fillText(d.value+"%",x+barWidth/4,y-5);
+
+    /* LABEL */
+    ctx.fillText(d.label,x+barWidth/4,h-15);
+  });
 }
-setInterval(()=>clock.innerText=new Date().toLocaleTimeString("id-ID"),1000);
+
+drawChart();
+window.addEventListener("resize",drawChart);
 </script>
 
 </body>
